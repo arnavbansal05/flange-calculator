@@ -8,26 +8,26 @@
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
   <div class="bg-white p-8 rounded shadow-md w-full max-w-md">
     <h1 class="text-2xl font-bold mb-6 text-center">Steel Flange Calculator</h1>
-    
+
     <form id="flangeForm" class="space-y-4">
       <div>
         <label class="block font-medium">Outer Diameter (mm)</label>
-        <input type="number" id="outerDiameter" class="w-full p-2 border rounded" required>
+        <input type="number" id="outerDiameter" step="any" class="w-full p-2 border rounded" required>
       </div>
 
       <div>
         <label class="block font-medium">Inner Diameter (mm)</label>
-        <input type="number" id="innerDiameter" class="w-full p-2 border rounded" required>
+        <input type="number" id="innerDiameter" step="any" class="w-full p-2 border rounded" required>
       </div>
 
       <div>
         <label class="block font-medium">Thickness (mm)</label>
-        <input type="number" id="thickness" class="w-full p-2 border rounded" required>
+        <input type="number" id="thickness" step="any" class="w-full p-2 border rounded" required>
       </div>
 
       <div>
         <label class="block font-medium">Steel Price (₹ per kg)</label>
-        <input type="number" id="pricePerKg" class="w-full p-2 border rounded" required>
+        <input type="number" id="pricePerKg" step="any" class="w-full p-2 border rounded" required>
       </div>
 
       <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Calculate</button>
@@ -43,16 +43,26 @@
     document.getElementById('flangeForm').addEventListener('submit', function(event) {
       event.preventDefault();
 
-      const outerDiameter = parseFloat(document.getElementById('outerDiameter').value);
-      const innerDiameter = parseFloat(document.getElementById('innerDiameter').value);
-      const thickness = parseFloat(document.getElementById('thickness').value);
-      const pricePerKg = parseFloat(document.getElementById('pricePerKg').value);
+      // Safely parse float or return 0
+      function getFloat(id) {
+        const value = parseFloat(document.getElementById(id).value);
+        return isNaN(value) ? 0 : value;
+      }
+
+      const outerDiameter = getFloat('outerDiameter');
+      const innerDiameter = getFloat('innerDiameter');
+      const thickness = getFloat('thickness');
+      const pricePerKg = getFloat('pricePerKg');
+
+      if (outerDiameter <= 0 || innerDiameter < 0 || thickness <= 0 || pricePerKg <= 0 || innerDiameter >= outerDiameter) {
+        alert("Please enter valid dimensions and price.");
+        return;
+      }
 
       const density = 7.85e-6; // g/mm³ → kg/mm³
 
       // Volume = π × (R² - r²) × h
       const volume = Math.PI * (Math.pow(outerDiameter / 2, 2) - Math.pow(innerDiameter / 2, 2)) * thickness;
-
       const weight = volume * density; // in kg
       const price = weight * pricePerKg;
 
