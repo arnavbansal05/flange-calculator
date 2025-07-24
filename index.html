@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Steel Flange Weight & Price Calculator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <div class="bg-white p-8 rounded shadow-md w-full max-w-md">
+    <h1 class="text-2xl font-bold mb-6 text-center">Steel Flange Calculator</h1>
+    
+    <form id="flangeForm" class="space-y-4">
+      <div>
+        <label class="block font-medium">Outer Diameter (mm)</label>
+        <input type="number" id="outerDiameter" class="w-full p-2 border rounded" required>
+      </div>
+
+      <div>
+        <label class="block font-medium">Inner Diameter (mm)</label>
+        <input type="number" id="innerDiameter" class="w-full p-2 border rounded" required>
+      </div>
+
+      <div>
+        <label class="block font-medium">Thickness (mm)</label>
+        <input type="number" id="thickness" class="w-full p-2 border rounded" required>
+      </div>
+
+      <div>
+        <label class="block font-medium">Steel Price (₹ per kg)</label>
+        <input type="number" id="pricePerKg" class="w-full p-2 border rounded" required>
+      </div>
+
+      <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Calculate</button>
+    </form>
+
+    <div id="results" class="mt-6 text-center font-medium text-gray-800 hidden">
+      <p id="weightResult"></p>
+      <p id="priceResult"></p>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('flangeForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      const outerDiameter = parseFloat(document.getElementById('outerDiameter').value);
+      const innerDiameter = parseFloat(document.getElementById('innerDiameter').value);
+      const thickness = parseFloat(document.getElementById('thickness').value);
+      const pricePerKg = parseFloat(document.getElementById('pricePerKg').value);
+
+      const density = 7.85e-6; // g/mm³ → kg/mm³
+
+      // Volume = π × (R² - r²) × h
+      const volume = Math.PI * (Math.pow(outerDiameter / 2, 2) - Math.pow(innerDiameter / 2, 2)) * thickness;
+
+      const weight = volume * density; // in kg
+      const price = weight * pricePerKg;
+
+      document.getElementById('weightResult').textContent = `Approx. Weight: ${weight.toFixed(2)} kg`;
+      document.getElementById('priceResult').textContent = `Estimated Price: ₹${price.toFixed(2)}`;
+      document.getElementById('results').classList.remove('hidden');
+    });
+  </script>
+</body>
+</html>
